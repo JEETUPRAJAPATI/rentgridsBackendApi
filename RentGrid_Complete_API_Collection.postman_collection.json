@@ -1,0 +1,1307 @@
+{
+  "info": {
+    "name": "RentGrid Complete API Collection",
+    "description": "Complete API collection for RentGrid property rental platform with subscription management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "3.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:7000/api",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "property_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "chat_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"emailId\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phonenumber\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/tenant/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "tenant", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Jane Smith\",\n  \"emailId\": \"jane.smith@example.com\",\n  \"password\": \"password123\",\n  \"phonenumber\": \"+1234567891\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/owner/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "owner", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Tenant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('auth_token', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/tenant/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "tenant", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Owner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('auth_token', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"jane.smith@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/owner/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "owner", "login"]
+            }
+          }
+        },
+        {
+          "name": "Generate Password Reset Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"userType\": \"tenant\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/password-reset/generate",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "password-reset", "generate"]
+            }
+          }
+        },
+        {
+          "name": "Verify Reset Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/password-reset/verify?token=your_reset_token_here",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "password-reset", "verify"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "your_reset_token_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Set New Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"your_reset_token_here\",\n  \"newPassword\": \"NewPass@123\",\n  \"confirmPassword\": \"NewPass@123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/password-reset/confirm",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "password-reset", "confirm"]
+            }
+          }
+        },
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/email/send-otp",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "email", "send-otp"]
+            }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/email/verify-otp",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "email", "verify-otp"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Properties",
+      "item": [
+        {
+          "name": "Get All Properties",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/properties?page=1&limit=10&city=Mumbai&minBudget=10000&maxBudget=50000&bhk=2BHK&furnishType=furnished",
+              "host": ["{{base_url}}"],
+              "path": ["properties"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "city",
+                  "value": "Mumbai"
+                },
+                {
+                  "key": "minBudget",
+                  "value": "10000"
+                },
+                {
+                  "key": "maxBudget",
+                  "value": "50000"
+                },
+                {
+                  "key": "bhk",
+                  "value": "2BHK"
+                },
+                {
+                  "key": "furnishType",
+                  "value": "furnished"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Property by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/properties/{{property_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["properties", "{{property_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Property with Form Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Beautiful 2BHK Apartment",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Spacious 2BHK apartment with modern amenities",
+                  "type": "text"
+                },
+                {
+                  "key": "propertyType",
+                  "value": "apartment",
+                  "type": "text"
+                },
+                {
+                  "key": "listingType",
+                  "value": "rent",
+                  "type": "text"
+                },
+                {
+                  "key": "monthlyRent",
+                  "value": "25000",
+                  "type": "text"
+                },
+                {
+                  "key": "securityDeposit",
+                  "value": "50000",
+                  "type": "text"
+                },
+                {
+                  "key": "area",
+                  "value": "1200",
+                  "type": "text"
+                },
+                {
+                  "key": "bedroom",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "bathroom",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "bhk",
+                  "value": "2BHK",
+                  "type": "text"
+                },
+                {
+                  "key": "furnishType",
+                  "value": "furnished",
+                  "type": "text"
+                },
+                {
+                  "key": "city",
+                  "value": "Mumbai",
+                  "type": "text"
+                },
+                {
+                  "key": "state",
+                  "value": "Maharashtra",
+                  "type": "text"
+                },
+                {
+                  "key": "locality",
+                  "value": "Bandra West",
+                  "type": "text"
+                },
+                {
+                  "key": "fullAddress",
+                  "value": "123 Main Street, Bandra West, Mumbai, Maharashtra",
+                  "type": "text"
+                },
+                {
+                  "key": "latitude",
+                  "value": "19.0596",
+                  "type": "text"
+                },
+                {
+                  "key": "longitude",
+                  "value": "72.8295",
+                  "type": "text"
+                },
+                {
+                  "key": "tenantCriteria[preferTenantType]",
+                  "value": "Family",
+                  "type": "text"
+                },
+                {
+                  "key": "tenantCriteria[genderPreference]",
+                  "value": "Any",
+                  "type": "text"
+                },
+                {
+                  "key": "tenantCriteria[petsAllowed]",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "documents",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/properties",
+              "host": ["{{base_url}}"],
+              "path": ["properties"]
+            }
+          }
+        },
+        {
+          "name": "Get Owner Properties",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/properties/owner/properties?status=published",
+              "host": ["{{base_url}}"],
+              "path": ["properties", "owner", "properties"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "published"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscription Catalog (Public)",
+      "item": [
+        {
+          "name": "Get Published Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/catalog/plans?audience=owner",
+              "host": ["{{base_url}}"],
+              "path": ["catalog", "plans"],
+              "query": [
+                {
+                  "key": "audience",
+                  "value": "owner"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Plan by Code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/catalog/plans/OWNER_PRO_MONTHLY",
+              "host": ["{{base_url}}"],
+              "path": ["catalog", "plans", "OWNER_PRO_MONTHLY"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Subscription Management",
+      "item": [
+        {
+          "name": "Create Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "code",
+                  "value": "OWNER_PREMIUM_MONTHLY",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "Owner Premium",
+                  "type": "text"
+                },
+                {
+                  "key": "audience",
+                  "value": "owner",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "Premium",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Premium features for property owners",
+                  "type": "text"
+                },
+                {
+                  "key": "billingCycle",
+                  "value": "monthly",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "2999",
+                  "type": "text"
+                },
+                {
+                  "key": "trialDays",
+                  "value": "14",
+                  "type": "text"
+                },
+                {
+                  "key": "isPopular",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "planImage",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/plans",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "plans"]
+            }
+          }
+        },
+        {
+          "name": "Get All Plans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/plans?audience=owner&isPublished=true",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "plans"],
+              "query": [
+                {
+                  "key": "audience",
+                  "value": "owner"
+                },
+                {
+                  "key": "isPublished",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Publish Plan",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isPublished\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/plans/{{plan_id}}/publish",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "plans", "{{plan_id}}", "publish"]
+            }
+          }
+        },
+        {
+          "name": "Add Plan Feature",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"featureKey\": \"max_properties\",\n  \"featureValue\": 10\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/plans/{{plan_id}}/features",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "plans", "{{plan_id}}", "features"]
+            }
+          }
+        },
+        {
+          "name": "Create Coupon",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"WELCOME20\",\n  \"kind\": \"percent\",\n  \"value\": 20,\n  \"maxRedemptions\": 100,\n  \"perUserLimit\": 1,\n  \"startsAt\": \"2024-01-01T00:00:00Z\",\n  \"endsAt\": \"2024-12-31T23:59:59Z\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/coupons",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "coupons"]
+            }
+          }
+        },
+        {
+          "name": "Get All Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/subscriptions?status=active&audience=owner",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "subscriptions"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "active"
+                },
+                {
+                  "key": "audience",
+                  "value": "owner"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Subscriptions",
+      "item": [
+        {
+          "name": "Subscribe to Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_code\": \"OWNER_PRO_MONTHLY\",\n  \"billing_cycle\": \"monthly\",\n  \"coupon_code\": \"WELCOME20\",\n  \"trial_override_days\": 14,\n  \"start_now\": true,\n  \"payment_gateway\": \"razorpay\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/me/subscriptions",
+              "host": ["{{base_url}}"],
+              "path": ["me", "subscriptions"]
+            }
+          }
+        },
+        {
+          "name": "Get My Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me/subscriptions",
+              "host": ["{{base_url}}"],
+              "path": ["me", "subscriptions"]
+            }
+          }
+        },
+        {
+          "name": "Get My Entitlements",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me/entitlements",
+              "host": ["{{base_url}}"],
+              "path": ["me", "entitlements"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cancel_at_period_end\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/me/subscriptions/{{subscription_id}}/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["me", "subscriptions", "{{subscription_id}}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "Report Usage",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metric\": \"property_created\",\n  \"quantity\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/me/usage/consume",
+              "host": ["{{base_url}}"],
+              "path": ["me", "usage", "consume"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments & Invoices",
+      "item": [
+        {
+          "name": "Get My Invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me/invoices?status=pending",
+              "host": ["{{base_url}}"],
+              "path": ["me", "invoices"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Initialize Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoice_id\": \"{{invoice_id}}\",\n  \"gateway\": \"razorpay\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/me/payments/init",
+              "host": ["{{base_url}}"],
+              "path": ["me", "payments", "init"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoice_id\": \"{{invoice_id}}\",\n  \"gateway\": \"razorpay\",\n  \"payload_from_gateway\": {\n    \"razorpay_payment_id\": \"pay_xxxxx\",\n    \"razorpay_order_id\": \"order_xxxxx\",\n    \"razorpay_signature\": \"signature_xxxxx\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/me/payments/confirm",
+              "host": ["{{base_url}}"],
+              "path": ["me", "payments", "confirm"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tenant Management",
+      "item": [
+        {
+          "name": "Get Tenant Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tenant/profile",
+              "host": ["{{base_url}}"],
+              "path": ["tenant", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Tenant Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"dob\": \"1990-01-01\",\n  \"gender\": \"Male\",\n  \"preferredTenantType\": \"Working Professional\",\n  \"propertyPreferences\": {\n    \"bhkType\": \"2BHK\",\n    \"furnishingType\": \"furnished\",\n    \"budgetMin\": 20000,\n    \"budgetMax\": 40000,\n    \"location\": \"Mumbai\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tenant/profile",
+              "host": ["{{base_url}}"],
+              "path": ["tenant", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get Dashboard Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tenant/dashboard/summary",
+              "host": ["{{base_url}}"],
+              "path": ["tenant", "dashboard", "summary"]
+            }
+          }
+        },
+        {
+          "name": "Save Property",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"propertyId\": \"{{property_id}}\",\n  \"notes\": \"Interested in this property\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tenant/saved-properties",
+              "host": ["{{base_url}}"],
+              "path": ["tenant", "saved-properties"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Owner Management",
+      "item": [
+        {
+          "name": "Get Owner Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/owner/profile",
+              "host": ["{{base_url}}"],
+              "path": ["owner", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Owner Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Jane Smith Updated\",\n  \"dob\": \"1985-05-15\",\n  \"gender\": \"Female\",\n  \"companyName\": \"Smith Properties\",\n  \"gstNumber\": \"GST123456789\",\n  \"address\": \"456 Business Street, Mumbai\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/owner/profile",
+              "host": ["{{base_url}}"],
+              "path": ["owner", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get Visit Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/owner/visit-requests?status=pending",
+              "host": ["{{base_url}}"],
+              "path": ["owner", "visit-requests"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Visit Requests",
+      "item": [
+        {
+          "name": "Create Visit Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"propertyId\": \"{{property_id}}\",\n  \"preferredSlots\": [\n    {\n      \"start\": \"2024-02-15T10:00:00Z\",\n      \"end\": \"2024-02-15T11:00:00Z\"\n    },\n    {\n      \"start\": \"2024-02-16T14:00:00Z\",\n      \"end\": \"2024-02-16T15:00:00Z\"\n    }\n  ],\n  \"notes\": \"Looking forward to viewing the property\",\n  \"consents\": {\n    \"terms\": true,\n    \"pdpa\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/visits/requests",
+              "host": ["{{base_url}}"],
+              "path": ["visits", "requests"]
+            }
+          }
+        },
+        {
+          "name": "Get Visit Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/visits/requests?status=pending",
+              "host": ["{{base_url}}"],
+              "path": ["visits", "requests"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chat & Messaging",
+      "item": [
+        {
+          "name": "Get All Chats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chat",
+              "host": ["{{base_url}}"],
+              "path": ["chat"]
+            }
+          }
+        },
+        {
+          "name": "Access Chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/access",
+              "host": ["{{base_url}}"],
+              "path": ["chat", "access"]
+            }
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Hello, I'm interested in your property\",\n  \"chatId\": \"{{chat_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/messages",
+              "host": ["{{base_url}}"],
+              "path": ["messages"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Features & Amenities",
+      "item": [
+        {
+          "name": "Get All Features",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/features",
+              "host": ["{{base_url}}"],
+              "path": ["features"]
+            }
+          }
+        },
+        {
+          "name": "Get All Amenities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/amenities",
+              "host": ["{{base_url}}"],
+              "path": ["amenities"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI Services",
+      "item": [
+        {
+          "name": "Generate Property Description",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Modern 2BHK Apartment\",\n  \"propertyType\": \"apartment\",\n  \"bhk\": \"2BHK\",\n  \"area\": 1200,\n  \"city\": \"Mumbai\",\n  \"locality\": \"Bandra West\",\n  \"furnishType\": \"furnished\",\n  \"amenities\": [\"Swimming Pool\", \"Gym\", \"Parking\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ai/property-description",
+              "host": ["{{base_url}}"],
+              "path": ["ai", "property-description"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Razorpay Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Razorpay-Signature",
+                "value": "webhook_signature_here"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"payment.captured\",\n  \"payload\": {\n    \"payment\": {\n      \"entity\": {\n        \"id\": \"pay_xxxxx\",\n        \"order_id\": \"order_xxxxx\",\n        \"status\": \"captured\",\n        \"amount\": 199900\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/webhooks/razorpay",
+              "host": ["{{base_url}}"],
+              "path": ["webhooks", "razorpay"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:7000/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7000",
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
